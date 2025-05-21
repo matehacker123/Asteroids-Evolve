@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Asteroids Evolve - Start Screen</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+      font-family: 'Orbitron', sans-serif;
+    }
+    canvas {
+      display: block;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <canvas id="startCanvas"></canvas>
+  <script>
+    const canvas = document.getElementById("startCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Starfield background
+    const stars = Array.from({length: 150}, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 1.5,
+      speed: Math.random() * 0.5 + 0.2,
+    }));
+
+    let blink = true;
+    setInterval(() => blink = !blink, 500);
+
+    function drawStars() {
+      ctx.fillStyle = "white";
+      for (let star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+        star.y += star.speed;
+        if (star.y > canvas.height) {
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
+      }
+    }
+
+    function drawTitle() {
+      ctx.fillStyle = "#0ff";
+      ctx.font = "80px Orbitron";
+      ctx.textAlign = "center";
+      ctx.fillText("ASTEROIDS", canvas.width / 2, canvas.height / 2 - 100);
+      ctx.fillStyle = "#fff";
+      ctx.font = "40px Orbitron";
+      ctx.fillText("EVOLVE", canvas.width / 2, canvas.height / 2 - 40);
+    }
+
+    function drawPrompt() {
+      if (blink) {
+        ctx.fillStyle = "#aaa";
+        ctx.font = "24px Orbitron";
+        ctx.fillText("Press Enter to Start", canvas.width / 2, canvas.height / 2 + 60);
+      }
+    }
+
+    function animateStartScreen() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawStars();
+      
+      drawTitle();
+      drawPrompt();
+      requestAnimationFrame(animateStartScreen);
+    }
+  // Function to redirect to the game
+    function startGame() {
+      window.location.href = 'indexgame.html'; // Replace with your game HTML file name
+    }
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        startGame();
+      }
+    });
+
+    // Start game on first screen touch
+    window.addEventListener("touchstart", () => {
+      startGame();
+    }, { once: true });
+    animateStartScreen();
+  </script>
+</body>
+</html>
